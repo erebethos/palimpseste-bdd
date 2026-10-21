@@ -1,0 +1,6 @@
+# Include SQL source in language statistics even though Linguist classifies SQL as data.
+*.sql linguist-detectable=true
+
+# Schema views are generated from the SQL definitions.
+docs/schema-*.svg linguist-generated=true
+docs/schema-*.dot linguist-generated=true
