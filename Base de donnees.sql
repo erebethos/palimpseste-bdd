@@ -163,8 +163,10 @@ CREATE TABLE demande_avis (
     CONSTRAINT pk_demande_avis PRIMARY KEY (id_demande),
     CONSTRAINT fk_demande_avis_fragment FOREIGN KEY (id_fragment) REFERENCES fragment(id_fragment) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_demande_avis_demandeur FOREIGN KEY (id_demandeur) REFERENCES utilisateur(id_utilisateur) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT fk_demande_avis_utilisateur_cible FOREIGN KEY (id_utilisateur_cible) REFERENCES utilisateur(id_utilisateur) ON UPDATE CASCADE ON DELETE SET NULL,
-    CONSTRAINT fk_demande_avis_groupe_cible FOREIGN KEY (id_groupe_cible) REFERENCES groupe_utilisateur(id_groupe) ON UPDATE CASCADE ON DELETE SET NULL,
+    -- Conserver la cible et son identifiant : une demande doit toujours en avoir exactement une.
+    -- MariaDB refuse les actions CASCADE / SET NULL sur les colonnes de ce CHECK.
+    CONSTRAINT fk_demande_avis_utilisateur_cible FOREIGN KEY (id_utilisateur_cible) REFERENCES utilisateur(id_utilisateur) ON UPDATE RESTRICT ON DELETE RESTRICT,
+    CONSTRAINT fk_demande_avis_groupe_cible FOREIGN KEY (id_groupe_cible) REFERENCES groupe_utilisateur(id_groupe) ON UPDATE RESTRICT ON DELETE RESTRICT,
     CONSTRAINT chk_demande_avis_cible_unique CHECK ((id_utilisateur_cible IS NOT NULL AND id_groupe_cible IS NULL) OR (id_utilisateur_cible IS NULL AND id_groupe_cible IS NOT NULL))
 ) ENGINE=InnoDB;
 
